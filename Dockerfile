@@ -1,14 +1,12 @@
-FROM amazonlinux:2
-FROM openjdk:11
-RUN groupadd -g 1000 lightfeather && \
-    useradd -g 1000 lightfeather -g lightfeather
+FROM node:latest
 
-USER lightfeather
+ENV NODE_VERSION 18.6.0
 
-COPY --chown=lightfeather:lightfeather . /home/lightfeather/managementsystem
-RUN cd /home/lightfeather/managementsystem
-WORKDIR /home/lightfeather/managementsystem
+#apk add --update nodejs npm
+#apk add --update npm
 
-# changing entry point to directly work with gradlew as container is acting up with RestControllerAdvice for Exception Handling properly
-#ENTRYPOINT ["java","-jar","build/libs/managementstyle-0.0.1-SNAPSHOT.jar"] 
-ENTRYPOINT ["./gradlew", "bootRun"]
+WORKDIR /home/node
+COPY . .
+
+RUN npm install
+ENTRYPOINT [ "npm", "start" ]
